@@ -30,11 +30,11 @@ export default {
         { page: "Signin", path: "/signin" },
         { page: "Profile", path: "/profile" },
         { page: "All Places", path: "/places/all" },
-        { page: "Add Place", path: "/places/add" },
-        { page: "Details Place", path: "/places/details/:id" }
+        { page: "Add Place", path: "/places/add" }
       ]
     };
-  },
-  methods: {}
+  }
 };
 </script>
+
+

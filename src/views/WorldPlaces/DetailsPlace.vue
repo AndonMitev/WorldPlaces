@@ -1,3 +1,15 @@
 <template>
-  <h2>details</h2>
+  <h2>{{singlePlace}}</h2>
 </template>
+
+<script>
+export default {
+  props: ["id"],
+  computed: {
+    singlePlace() {
+      return this.$store.getters.singlePlace(this.id);
+    }
+  }
+};
+</script>
+

@@ -45,6 +45,7 @@ export default new Router({
     {
       path: '/places/details/:id',
       name: 'detailsplace',
+      props: true,
       component: DetailsPlace
     }
     
