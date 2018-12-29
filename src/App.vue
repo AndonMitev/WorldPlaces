@@ -22,17 +22,35 @@
 export default {
   name: "App",
   components: {},
-  data() {
-    return {
-      menuLinks: [
+  computed: {
+    menuLinks() {
+      if (this.isUserAuthenticated) {
+        return this.authenticatedUserLinks();
+      } else {
+        return this.unAuthenticatedUserLinks();
+      }
+    },
+    isUserAuthenticated() {
+      return this.$store.getters.user;
+    }
+  },
+  methods: {
+    authenticatedUserLinks() {
+      return [
         { page: "Home", path: "/" },
-        { page: "Signup", path: "/signup" },
-        { page: "Signin", path: "/signin" },
         { page: "Profile", path: "/profile" },
         { page: "All Places", path: "/places/all" },
         { page: "Add Place", path: "/places/add" }
-      ]
-    };
+      ];
+    },
+    unAuthenticatedUserLinks() {
+      return [
+        { page: "Home", path: "/" },
+        { page: "Signup", path: "/signup" },
+        { page: "Signin", path: "/signin" },
+        { page: "All Places", path: "/places/all" }
+      ];
+    }
   }
 };
 </script>

@@ -64,11 +64,15 @@ export default {
   },
   methods: {
     addPlace () {
+      if(!this.formIsValid) {
+        return;
+      }
       const place = {
         title: this.title,
         imageUrl: this.imageUrl
       }
       this.$store.dispatch('addNewPlace', place);
+      this.$router.push('/places/all');
     }
   }
 };

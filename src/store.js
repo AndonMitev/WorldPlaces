@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import * as firebase from 'firebase';
 
 Vue.use(Vuex);
 
@@ -17,14 +18,14 @@ export default new Vuex.Store({
         id: "test2"
       }
     ],
-    user: {
-      id: 'user1',
-      addedPlaces: ['vietnam']
-    }
+    user: null
   },
   mutations: {
     addNewPlace(state, payload) {
       return state.allPlaces.push(payload)
+    },
+    setUser(state, payload) {
+      return state.user = payload;
     }
   },
   actions: {
@@ -32,8 +33,34 @@ export default new Vuex.Store({
       const place = {
         title: payload.title,
         imageUrl: payload.imageUrl
-      }
+      };
       commit('addNewPlace', place);
+    },
+    signUserUp({ commit }, payload) {
+      firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
+        .then(successResponse => {
+          const newUser = {
+            id: successResponse.user.uid,
+            addedPlaces: []
+          };
+          commit('setUser', newUser);
+        })
+        .catch(errorResponse => {
+          console.log(errorResponse);
+        });
+    },
+    signUserIn({ commit }, payload) {
+      firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
+        .then(successResponse => {
+          const newUser = {
+            id: successResponse.user.uid,
+            addedPlaces: []
+          };
+          commit('setUser', newUser);
+        })
+        .catch(errorResponse => {
+          console.log(errorResponse);
+        });
     }
   },
   getters: {
@@ -42,6 +69,9 @@ export default new Vuex.Store({
     },
     singlePlace(state) {
       return placeId => state.allPlaces.find(data => data.id === placeId);
+    },
+    user(state) {
+      return state.user;
     }
   }
 });
