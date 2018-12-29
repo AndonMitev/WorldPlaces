@@ -1,5 +1,10 @@
 <template>
   <v-container>
+    <v-layout row v-if="error">
+      <v-flex xs12 sm6 offset-sm3>
+        <app-alert @dismissed="closeAlert" :text="error"></app-alert>
+      </v-flex>
+    </v-layout>
     <v-layout row>
       <v-flex xs12 sm6 offset-sm3>
         <v-card>
@@ -16,7 +21,8 @@
                           id="email"
                           label="Email"
                           v-model="email"
-                          required="Email is required"></v-text-field>
+                          required="Email is required"
+                        ></v-text-field>
                       </v-flex>
                     </v-layout>
                     <v-layout row>
@@ -27,13 +33,22 @@
                           id="password"
                           label="Password"
                           v-model="password"
-                          required="Password is required"></v-text-field>
+                          required="Password is required"
+                        ></v-text-field>
                       </v-flex>
                     </v-layout>
                     <v-layout>
                       <v-spacer></v-spacer>
                       <v-flex>
-                        <v-btn type="submit">Sign In</v-btn>
+                        <v-btn
+                          type="submit"
+                          :disabled="loading"
+                          :loading="loading">
+                          Sign Up
+                          <span slot="loader" class="custom-loader">
+                            <v-icon light>cached</v-icon>
+                          </span>
+                        </v-btn>
                       </v-flex>
                     </v-layout>
                   </form>
@@ -52,29 +67,38 @@
 export default {
   data() {
     return {
-      email: '',
-      password: ''
-    }
+      email: "",
+      password: ""
+    };
   },
   computed: {
-    user () {
-      return this.$store.getters.user
+    user() {
+      return this.$store.getters.user;
+    },
+    error() {
+      return this.$store.getters.error;
+    },
+    loading() {
+      return this.$store.getters.loading;
     }
   },
   watch: {
-    user (value) {
+    user(value) {
       if (value) {
-        this.$router.push('/');
+        this.$router.push("/");
       }
     }
   },
   methods: {
     onSignIn() {
-      this.$store.dispatch('signUserIn', {
+      this.$store.dispatch("signUserIn", {
         email: this.email,
         password: this.password
       });
+    },
+    closeAlert() {
+      this.$store.dispatch("clearError");
     }
   }
-}
+};
 </script>

@@ -5,6 +5,7 @@ import * as firebase from 'firebase'
 import router from './router';
 import store from './store';
 import './registerServiceWorker';
+import './assets/styles/main.css'
 import AlertCmp from './views/Shared/Alert.vue';
 
 Vue.config.productionTip = false;

@@ -50,7 +50,15 @@
                 <v-layout row>
                   <v-spacer></v-spacer>
                   <v-flex>
-                    <v-btn type="submit">Sign Up</v-btn>
+                    <v-btn
+                      type="submit"
+                      :disabled="loading"
+                      :loading="loading">
+                      Sign Up
+                      <span slot="loader" class="custom-loader">
+                        <v-icon light>cached</v-icon>
+                      </span>
+                    </v-btn>
                   </v-flex>
                 </v-layout>
               </form>
@@ -82,6 +90,9 @@ export default {
     },
     error() {
       return this.$store.getters.error;
+    },
+    loading() {
+      return this.$store.getters.loading;
     }
   },
   watch: {
@@ -89,7 +100,7 @@ export default {
       if (value) {
         this.$router.push("/");
       }
-    },
+    }
   },
   methods: {
     onSignUp() {
@@ -99,9 +110,8 @@ export default {
       });
     },
     closeAlert() {
-      this.$store.dispatch('clearError');
+      this.$store.dispatch("clearError");
     }
   }
 };
 </script>
-

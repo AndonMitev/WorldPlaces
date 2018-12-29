@@ -48,6 +48,7 @@ export default new Vuex.Store({
         imageUrl: payload.imageUrl
       };
       commit('addNewPlace', place);
+      commit('setLoading', false);
     },
     signUserUp({ commit }, payload) {
       commit('setLoading', true);
@@ -61,7 +62,10 @@ export default new Vuex.Store({
           };
           commit('setUser', newUser);
         })
-        .catch(errorResponse => commit('setError', errorResponse.message));
+        .catch(errorResponse => {
+          commit('setError', errorResponse.message);
+          commit('setLoading', false);
+        });
     },
     signUserIn({ commit }, payload) {
       commit('setLoading', true);
@@ -75,9 +79,12 @@ export default new Vuex.Store({
           };
           commit('setUser', newUser);
         })
-        .catch(errorResponse => commit('setError', errorResponse.message));
+        .catch(errorResponse => {
+          commit('setError', errorResponse.message);
+          commit('setLoading', false);
+        });
     },
-    clearError({commit}) {
+    clearError({ commit }) {
       commit('clearError');
     }
   },
