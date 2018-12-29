@@ -1,5 +1,10 @@
 <template>
   <v-container>
+    <v-layout row v-if="error">
+      <v-flex xs12 sm6 offset-sm3>
+        <app-alert @dismissed="closeAlert" :text="error"></app-alert>
+      </v-flex>
+    </v-layout>
     <v-layout row>
       <v-flex xs12 sm6 offset-sm3>
         <v-card>
@@ -74,6 +79,9 @@ export default {
     },
     user() {
       return this.$store.getters.user;
+    },
+    error() {
+      return this.$store.getters.error;
     }
   },
   watch: {
@@ -81,7 +89,7 @@ export default {
       if (value) {
         this.$router.push("/");
       }
-    }
+    },
   },
   methods: {
     onSignUp() {
@@ -89,6 +97,9 @@ export default {
         email: this.email,
         password: this.password
       });
+    },
+    closeAlert() {
+      this.$store.dispatch('clearError');
     }
   }
 };
