@@ -9,8 +9,16 @@
         v-for="(link, index) in menuLinks"
         :key="index"
         router
-        :to="link.path"
-      >{{link.page}}</v-btn>
+        :to="link.path">
+        {{link.page}}
+      </v-btn>
+      <v-btn
+        flat
+        round
+        v-if="isUserAuthenticated"
+        @click="logout">
+        Logout
+      </v-btn>
     </v-toolbar>
     <main>
       <router-view></router-view>
@@ -50,6 +58,9 @@ export default {
         { page: "Signin", path: "/signin" },
         { page: "All Places", path: "/places/all" }
       ];
+    },
+    logout() {
+      this.$store.dispatch('logout');
     }
   }
 };

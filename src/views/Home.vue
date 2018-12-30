@@ -1,8 +1,18 @@
 <template>
   <v-container>
+    <v-layout>
+      <v-flex xs12 class="text-xs-center">
+        <v-progress-circular
+          :size="100"
+          color="primary"
+          indeterminate
+          v-if="loading">
+        </v-progress-circular>
+      </v-flex>
+    </v-layout>
     <v-layout row wrap>
       <v-flex xs12>
-        <v-carousel>
+        <v-carousel v-if="!loading">
           <v-carousel-item v-for="item in places"
           :key="item.id"
           :src="item.imageUrl"
@@ -18,7 +28,10 @@
 export default {
   computed: {
     places () {
-      return this.$store.getters.allPlaces
+      return this.$store.getters.allPlaces;
+    },
+    loading() {
+      return this.$store.getters.loading;
     }
   }
 };

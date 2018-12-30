@@ -21,7 +21,13 @@ new Vue({
       authDomain: "worldplaces-d1b9d.firebaseapp.com",
       databaseURL: "https://worldplaces-d1b9d.firebaseio.com",
       projectId: "worldplaces-d1b9d",
-      storageBucket: "worldplaces-d1b9d.appspot.com",
+      storageBucket: "gs://worldplaces-d1b9d.appspot.com",
+    });
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        return this.$store.dispatch('autoSignIn', user);
+      }
     })
+    this.$store.dispatch('loadAllPlaces');
   }
 }).$mount('#app');

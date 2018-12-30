@@ -1,6 +1,16 @@
 <template>
   <v-container grid-list-md text-xs-center>
-    <v-layout row wrap>
+    <v-layout>
+      <v-flex xs12 text-xs-center>
+        <v-progress-circular
+          :size="100"
+          color="primary"
+          indeterminate
+          v-if="loading">
+        </v-progress-circular>
+      </v-flex>
+    </v-layout>
+    <v-layout row wrap v-if="!loading">
       <v-flex xs12 md6 lg4 v-for="image in places" :key="image.id">
         <v-card>
           <v-img
@@ -28,6 +38,9 @@ export default {
   computed: {
     places() {
       return this.$store.getters.allPlaces;
+    },
+    loading() {
+      return this.$store.getters.loading;
     }
   },
   methods: {

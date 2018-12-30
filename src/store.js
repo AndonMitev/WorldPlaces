@@ -26,6 +26,9 @@ export default new Vuex.Store({
     addNewPlace(state, payload) {
       return state.allPlaces.push(payload)
     },
+    setLoadedPlaces(state, payload) {
+      return state.allPlaces = payload;
+    },
     setUser(state, payload) {
       return state.user = payload;
     },
@@ -37,18 +40,68 @@ export default new Vuex.Store({
     },
     clearError(state) {
       return state.error = null;
-    }
+    },
   },
   actions: {
-    addNewPlace({ commit }, payload) {
+    addNewPlace({ commit, getters }, payload) {
       commit('setLoading', true);
-      commit('clearError');
+      // commit('clearError');
       const place = {
         title: payload.title,
-        imageUrl: payload.imageUrl
+        image: payload.image,
+        creatorId: getters.user.id
       };
-      commit('addNewPlace', place);
-      commit('setLoading', false);
+
+      let imageUrl, key;
+
+      firebase.database().ref('places').push(place)
+        .then(successResponse => {
+          return successResponse.key;
+        })
+        .then(key => {
+          const filename = payload.image.name;
+          const ext = filename.slice(filename.lastIndexOf('.'));
+          return firebase.storage().ref('places/' + key + '.' + ext).put(payload.image);
+        })
+        .then(fileData => {
+          console.log(fileData.metadata);
+          imageUrl = fileData.metadata.downloadURLs[0];
+          return firebase.database().ref('places').child(key).update({ imageUrl: imageUrl });
+        })
+        .then(() => {
+          commit('addNewPlace', {
+            ...place,
+            imageUrl,
+            id: key
+          });
+        })
+        .catch(errorResponse => {
+          console.log(errorResponse)
+          commit('setLoading', false);
+        });
+    },
+    loadAllPlaces({ commit }) {
+      commit('setLoading', true);
+      firebase.database().ref('places').once('value')
+        .then(successResponse => {
+          const allPlaces = [];
+          const obj = successResponse.val();
+          for (let key in obj) {
+            allPlaces.push({
+              id: key,
+              title: obj[key].title,
+              imageUrl: obj[key].imageUrl,
+              creatorId: obj[key].creatorId
+            });
+          }
+          console.log(allPlaces);
+          commit('setLoadedPlaces', allPlaces);
+          commit('setLoading', false);
+        })
+        .catch(errorResponse => {
+          console.log(errorResponse);
+          commit('setLoading', false);
+        })
     },
     signUserUp({ commit }, payload) {
       commit('setLoading', true);
@@ -83,6 +136,13 @@ export default new Vuex.Store({
           commit('setError', errorResponse.message);
           commit('setLoading', false);
         });
+    },
+    autoSignIn({ commit }, payload) {
+      commit('setUser', { id: payload.uid, addedPlaces: [] });
+    },
+    logout({ commit }) {
+      firebase.auth().signOut();
+      commit('setUser', null);
     },
     clearError({ commit }) {
       commit('clearError');

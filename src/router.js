@@ -7,6 +7,7 @@ import Profile from './views/Users/Profile.vue';
 import AddPlace from './views/WorldPlaces/AddPlace.vue';
 import AllPlaces from './views/WorldPlaces/AllPlaces.vue';
 import DetailsPlace from './views/WorldPlaces/DetailsPlace.vue';
+import AuthGuard from './auth-guard';
 
 Vue.use(Router);
 
@@ -35,7 +36,8 @@ export default new Router({
     {
       path: '/places/add',
       name: 'addplace',
-      component: AddPlace
+      component: AddPlace,
+      beforeEnter: AuthGuard
     },
     {
       path: '/places/all',
